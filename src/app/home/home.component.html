@@ -1,0 +1,57 @@
+<section class="topCenter">
+    <h1 class="h1">
+        <span class="g">ALGO</span> <span class="y"> GRANDE</span><br />
+        <span class="g">SE ACERCA...</span>
+    </h1>
+    <p class="question">¿ESTÁS LISTO PARA MÁS TRABAJOS Y MEJORES CLIENTES?</p>
+</section>
+
+<section class="bottomRow">
+    <div class="mascotCol">
+        <img class="mascotBig" src="assets/mascot800px.png" alt="Mascot" />
+    </div>
+
+    <div class="formCol">
+        <section class="card">
+            <h2 class="cardTitle">PRE-REGÍSTRATE AHORA</h2>
+            <div class="cardLine"></div>
+
+            <form class="form" [formGroup]="form" (ngSubmit)="submit()">
+                <input class="field" formControlName="fullName" placeholder="Nombre completo" />
+                <div class="fieldError" *ngIf="showError('fullName')">
+                    Ingresa tu nombre completo.
+                </div>
+                <input class="field" formControlName="specialty" placeholder="Especialidad" />
+                <div class="fieldError" *ngIf="showError('specialty')">
+                    Ingresa tu especialidad.
+                </div>
+                <input class="field" formControlName="numberDocument" placeholder="Número de Documento" />
+                <div class="fieldError" *ngIf="showError('numberDocument')">
+                    Ingresa tu número de documento.
+                </div>
+                <input class="field" formControlName="district" placeholder="Distrito" />
+                <div class="fieldError" *ngIf="showError('district')">
+                    Ingresa tu distrito.
+                </div>
+                <input class="field" formControlName="phone" placeholder="Teléfono de contacto (WhatsApp)" />
+                <div class="fieldError" *ngIf="showError('phone')">
+                    Ingresa tu teléfono.
+                </div>
+                <label class="consent">
+                    <input type="checkbox" formControlName="consent" />
+                    <span>
+                        Acepto el tratamiento de mis datos personales conforme a la
+                        <a routerLink="/privacidad" target="_blank" rel="noopener">
+                            Política de Privacidad
+                        </a>.
+                    </span>
+                </label>
+                <button class="cta" type="submit" [disabled]="loading() || form.invalid">
+                    {{ loading() ? 'ENVIANDO...' : 'QUIERO SABER MÁS' }}
+                </button>
+                <div class="msg ok" *ngIf="okMsg()">{{ okMsg() }}</div>
+                <div class="msg bad" *ngIf="errMsg()">{{ errMsg() }}</div>
+            </form>
+        </section>
+    </div>
+</section>

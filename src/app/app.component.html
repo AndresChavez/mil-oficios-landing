@@ -1,0 +1,51 @@
+<div class="page">
+    <div class="bg"></div>
+    <div class="veil"></div>
+
+    <main class="wrap">
+        <section class="topCenter">
+            <h1 class="h1">
+                <span class="g">ALGO</span> <span class="y"> GRANDE</span><br />
+                <span class="g">SE ACERCA...</span>
+            </h1>
+            <p class="question">¿ESTÁS LISTO PARA MÁS TRABAJOS Y MEJORES CLIENTES?</p>
+        </section>
+
+        <section class="bottomRow">
+            <div class="mascotCol">
+                <img class="mascotBig" src="assets/mascot800px.png" alt="Mascot" />
+            </div>
+
+            <div class="formCol">
+                <section class="card">
+                    <h2 class="cardTitle">PRE-REGÍSTRATE AHORA</h2>
+                    <div class="cardLine"></div>
+
+                    <form class="form" [formGroup]="form" (ngSubmit)="submit()">
+                        <input class="field" formControlName="fullName" placeholder="Nombre completo" />
+                        <input class="field" formControlName="specialty" placeholder="Especialidad" />
+                        <input class="field" formControlName="numberDocument" placeholder="Número de Documento" />
+                        <input class="field" formControlName="district" placeholder="Distrito" />
+                        <input class="field" formControlName="phone" placeholder="Teléfono de contacto (WhatsApp)" />
+                        <label class="consent">
+                            <input type="checkbox" formControlName="consent" />
+                            <span>
+                                Acepto el tratamiento de mis datos personales conforme a la
+                                <a routerLink="/privacidad" target="_blank" rel="noopener">
+                                    Política de Privacidad
+                                </a>.
+                            </span>
+                        </label>
+
+                        <button class="cta" type="submit" [disabled]="loading()">
+                            @if (!loading()) { QUIERO SABER MÁS } @else { ENVIANDO... }
+                        </button>
+                        <div class="msg ok" *ngIf="okMsg()">{{ okMsg() }}</div>
+                        <div class="msg bad" *ngIf="errMsg()">{{ errMsg() }}</div>
+                    </form>
+                </section>
+            </div>
+        </section>
+    </main>
+    <footer class="foot">© 2026 MILOFICIOS SAC</footer>
+</div>
