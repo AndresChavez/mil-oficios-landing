@@ -1,10 +1,31 @@
-<div class="page">
-  <div class="bg"></div>
-  <div class="veil"></div>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" routerLink="/">
+      <span class="brand-mark">🛠</span>
+      <span>Mil Oficios</span>
+    </a>
 
-  <main class="wrap">
-    <router-outlet></router-outlet>
-  </main>
+    <nav class="desktop-nav">
+      <a class="btn btn-secondary" routerLink="/">Inicio</a>
+      <a class="btn btn-secondary" routerLink="/privacy">Políticas de privacidad</a>
+      <a
+        class="btn btn-whatsapp"
+        href="https://wa.me/51980941418?text=Hola%2C%20necesito%20un%20especialista%20de%20Mil%20Oficios"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Hablar por WhatsApp
+      </a>
+    </nav>
+  </div>
+</header>
 
-  <footer class="foot">© 2026 MILOFICIOS SAC</footer>
-</div>
+<main class="layout-main">
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    © 2026 Mil Oficios SAC · Todos los derechos reservados
+  </div>
+</footer>

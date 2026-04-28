@@ -9,7 +9,7 @@ export const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: '', component: HomeComponent },
-      { path: 'privacidad', component: PrivacyComponent },
-    ],
-  },
+      { path: 'privacy', component: PrivacyComponent }
+    ]
+  }
 ];

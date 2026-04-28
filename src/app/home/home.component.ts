@@ -1,77 +1,154 @@
-import { Component, inject, signal } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Component, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
 import { finalize } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+import { form } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
+  styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  private http = inject(HttpClient);
+  private readonly whatsappNumber = '51980941418';
+
+  specialistForm: FormGroup;
 
   loading = signal(false);
-  okMsg = signal<string | null>(null);
-  errMsg = signal<string | null>(null);
-  form;
+  private readonly okMessage = signal('');
+  private readonly errMessage = signal('');
 
-  constructor(private fb: FormBuilder, private https: HttpClient) {
-    this.form = this.fb.group({
-      fullName: ['', Validators.required],
-      specialty: ['', Validators.required],
-      numberDocument: [''],
-      district: ['', Validators.required],
-      phone: ['', Validators.required],
-      consent: [false, Validators.requiredTrue],
+  constructor(
+    private fb: FormBuilder,
+    private http: HttpClient
+  ) {
+    this.specialistForm = this.fb.group({
+      nombre: ['', [Validators.required, Validators.minLength(3)]],
+      celular: ['', [Validators.required, Validators.minLength(9)]],
+      docIdentidad: ['', [Validators.required, Validators.minLength(8)]],
+      especialidad: ['', [Validators.required, Validators.minLength(3)]],
+      zona: ['', [Validators.required, Validators.minLength(2)]],
+      experiencia: [''],
+      consent: [false, [Validators.requiredTrue]]
     });
   }
-  showError(field: string): boolean {
-        const control = this.form?.get(field);
-        return !!(control && control.touched && control.invalid);
+
+  buildWhatsAppUrl(message: string): string {
+    return `https://wa.me/${this.whatsappNumber}?text=${encodeURIComponent(message)}`;
   }
 
-  submit() {
-    this.okMsg.set(null);
-    this.errMsg.set(null);
+  goToWhatsApp(): void {
+    const url = this.buildWhatsAppUrl(
+      'Hola, necesito un especialista de Mil Oficios'
+    );
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
 
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.errMsg.set('Por favor completa los campos obligatorios.');
+  okMsg(): string {
+    return this.okMessage();
+  }
+
+  errMsg(): string {
+    return this.errMessage();
+  }
+
+  fieldInvalid(fieldName: string): boolean {
+    const field = this.specialistForm.get(fieldName);
+    return !!field && field.invalid && (field.touched || field.dirty);
+  }
+
+  private clearMessageAfterDelay(): void {
+    setTimeout(() => {
+      this.okMessage.set('');
+      this.errMessage.set('');
+    }, 5000);
+  }
+
+  private setSuccess(message: string): void {
+    this.errMessage.set('');
+    this.okMessage.set(message);
+    this.clearMessageAfterDelay();
+  }
+
+  private setError(message: string): void {
+    this.okMessage.set('');
+    this.errMessage.set(message);
+    this.clearMessageAfterDelay();
+  }
+
+  private validatePhone(value: string): boolean {
+    const cleaned = value.replace(/\D/g, '');
+    return cleaned.length >= 9;
+  }
+
+  submitForm(): void {
+    this.clearMessageAfterDelay();
+
+    if (this.specialistForm.invalid) {
+      this.specialistForm.markAllAsTouched();
+      this.setError('Completa correctamente los campos obligatorios.');
       return;
     }
 
-    const payload = this.form.getRawValue();
+    const formValue = this.specialistForm.getRawValue();
+
+    if (!this.validatePhone(formValue.celular)) {
+      this.setError('Ingresa un número de celular válido.');
+      return;
+    }
+
+    const payload = {
+      fullName: formValue.nombre,
+      phone: formValue.celular,
+      numberDocument: formValue.docIdentidad,
+      speciality: formValue.especialidad,
+      district: formValue.zona,
+      //experiencia: formValue.experiencia,
+      consent: formValue.consent,
+      //source: 'miloficios-landing',
+      //createdAt: new Date().toISOString()
+    };
 
     this.loading.set(true);
-    this.form.disable(); // deshabilita inputs + checkbox
+    this.specialistForm.disable();
 
     this.http
       .post<{ message: string }>(environment.preRegisterEndpoint, payload)
       .pipe(
         finalize(() => {
           this.loading.set(false);
-          this.form.enable(); // vuelve a habilitar
+          this.specialistForm.enable();
         })
       )
       .subscribe({
         next: (res) => {
-          this.okMsg.set(res?.message ?? '¡Listo! Te contactaremos pronto.');
-          this.form.reset({
-            fullName: '',
-            specialty: '',
-            numberDocument: '',
-            district: '',
-            phone: '',
-            consent: false,
+          this.setSuccess('Gracias, recibimos tu registro y te contactaremos pronto.');
+
+          this.specialistForm.reset({
+            nombre: '',
+            celular: '',
+            docIdentidad: '',
+            especialidad: '',
+            zona: '',
+            experiencia: '',
+            consent: false
           });
         },
         error: (err) => {
-          this.errMsg.set(err?.error?.message ?? 'No se pudo enviar. Intenta nuevamente.');
-        },
+          this.setError(
+            err?.error?.message ?? 'No se pudo enviar. Intenta nuevamente.'
+          );
+        }
       });
   }
 }

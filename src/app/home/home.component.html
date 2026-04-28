@@ -1,57 +1,188 @@
-<section class="topCenter">
-    <h1 class="h1">
-        <span class="g">ALGO</span> <span class="y"> GRANDE</span><br />
-        <span class="g">SE ACERCA...</span>
-    </h1>
-    <p class="question">¿ESTÁS LISTO PARA MÁS TRABAJOS Y MEJORES CLIENTES?</p>
-</section>
+<main id="top">
+  <section class="hero">
+    <div class="container hero-grid">
+      <article class="panel hero-left">
+        <div class="hero-copy hero-copy-compact">
+          <h1 class="hero-title">Encuentra tu especialista</h1>
 
-<section class="bottomRow">
-    <div class="mascotCol">
-        <img class="mascotBig" src="assets/mascot800px.png" alt="Mascot" />
+          <p class="hero-subtitle">
+            En Mil Oficios conectamos a clientes con especialistas de confianza para trabajos de gasfitería,
+            electricidad, carpintería y pintura. Escríbenos por WhatsApp y te ayudamos a coordinar tu
+            servicio.
+          </p>
+
+          <div class="hero-service-chips" aria-label="Servicios disponibles">
+            <span class="service-chip">🚰 Gasfitería</span>
+            <span class="service-chip">⚡ Electricidad</span>
+            <span class="service-chip">❄️ Línea Blanca</span>
+            <span class="service-chip">🎨 Pintura</span>
+          </div>
+
+          <div class="hero-actions hero-actions-compact">
+            <button class="btn btn-whatsapp btn-whatsapp-large" type="button" (click)="goToWhatsApp()">
+              💬 Ir a WhatsApp
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-visual hero-visual-clean">
+          <img src="assets/gasfitero_atendiendo.png" alt="Especialista atendiendo a una clienta en casa"
+            loading="lazy" />
+        </div>
+      </article>
+
+      <article class="panel hero-right" id="registro">
+        <div class="form-card">
+          <h2 class="hero-title hero-title-right">Únete como especialista</h2>
+          <p>Déjanos tus datos y forma parte de la red de Mil Oficios.</p>
+
+          <form class="form-grid" [formGroup]="specialistForm" (ngSubmit)="submitForm()">
+            <div class="field">
+              <label for="nombre">Nombre completo</label>
+              <input id="nombre" type="text" formControlName="nombre" placeholder="Ej. Juan Pérez" />
+              @if (fieldInvalid('nombre')) {
+              <small class="error-text">Ingresa tu nombre completo.</small>
+              }
+            </div>
+
+            <div class="field">
+              <label for="celular">Celular</label>
+              <input id="celular" type="tel" formControlName="celular" placeholder="Ej. 987654321" />
+              @if (fieldInvalid('celular')) {
+              <small class="error-text">Ingresa un celular válido.</small>
+              }
+            </div>
+
+            <div class="field">
+              <label for="docIdentidad">Documento de Identidad</label>
+              <input id="docIdentidad" type="text" formControlName="docIdentidad" placeholder="Ej. 46184971" />
+              @if (fieldInvalid('docIdentidad')) {
+              <small class="error-text">Ingresa un documento de identidad válido.</small>
+              }
+            </div>
+
+            <div class="field">
+              <label for="especialidad">Especialidad</label>
+              <input id="especialidad" type="text" formControlName="especialidad" placeholder="Ej. Gasfitero" />
+              @if (fieldInvalid('especialidad')) {
+              <small class="error-text">Ingresa una especialidad válida.</small>
+              }
+            </div>
+
+            <div class="field">
+              <label for="zona">Distritos de atención</label>
+              <input id="zona" type="text" formControlName="zona" placeholder="Ej. Surco, San Borja, La Molina" />
+              @if (fieldInvalid('zona')) {
+              <small class="error-text">Ingresa tu distrito o zona.</small>
+              }
+            </div>
+
+            <div class="field">
+              <label for="experiencia">Cuéntanos más de ti (opcional)</label>
+              <textarea id="experiencia" formControlName="experiencia"
+                placeholder="Ej. También trabajo en electricidad, pintura y drywall"></textarea>
+            </div>
+
+            <label class="consent">
+              <input type="checkbox" formControlName="consent" />
+              <span>
+                Acepto el tratamiento de mis datos personales conforme a la
+                <a routerLink="/privacy" target="_blank" rel="noopener">
+                  Política de Privacidad
+                </a>.
+              </span>
+            </label>
+
+            @if (fieldInvalid('consent')) {
+            <small class="error-text">Debes aceptar la política de privacidad.</small>
+            }
+
+            <div class="msg ok" *ngIf="okMsg()">{{ okMsg() }}</div>
+            <div class="msg bad" *ngIf="errMsg()">{{ errMsg() }}</div>
+
+            <button class="btn btn-primary form-submit" type="submit">
+              REGISTRARME
+            </button>
+          </form>
+        </div>
+      </article>
     </div>
+  </section>
 
-    <div class="formCol">
-        <section class="card">
-            <h2 class="cardTitle">PRE-REGÍSTRATE AHORA</h2>
-            <div class="cardLine"></div>
+  <section class="section" id="como-funciona">
+    <div class="container">
+      <div class="section-title">
+        <h3>¿Cómo funciona?</h3>
+        <p>
+          Diseñamos una experiencia simple para ambos lados: clientes que buscan ayuda y especialistas que
+          quieren generar nuevas oportunidades.
+        </p>
+      </div>
 
-            <form class="form" [formGroup]="form" (ngSubmit)="submit()">
-                <input class="field" formControlName="fullName" placeholder="Nombre completo" />
-                <div class="fieldError" *ngIf="showError('fullName')">
-                    Ingresa tu nombre completo.
-                </div>
-                <input class="field" formControlName="specialty" placeholder="Especialidad" />
-                <div class="fieldError" *ngIf="showError('specialty')">
-                    Ingresa tu especialidad.
-                </div>
-                <input class="field" formControlName="numberDocument" placeholder="Número de Documento" />
-                <div class="fieldError" *ngIf="showError('numberDocument')">
-                    Ingresa tu número de documento.
-                </div>
-                <input class="field" formControlName="district" placeholder="Distrito" />
-                <div class="fieldError" *ngIf="showError('district')">
-                    Ingresa tu distrito.
-                </div>
-                <input class="field" formControlName="phone" placeholder="Teléfono de contacto (WhatsApp)" />
-                <div class="fieldError" *ngIf="showError('phone')">
-                    Ingresa tu teléfono.
-                </div>
-                <label class="consent">
-                    <input type="checkbox" formControlName="consent" />
-                    <span>
-                        Acepto el tratamiento de mis datos personales conforme a la
-                        <a routerLink="/privacidad" target="_blank" rel="noopener">
-                            Política de Privacidad
-                        </a>.
-                    </span>
-                </label>
-                <button class="cta" type="submit" [disabled]="loading() || form.invalid">
-                    {{ loading() ? 'ENVIANDO...' : 'QUIERO SABER MÁS' }}
-                </button>
-                <div class="msg ok" *ngIf="okMsg()">{{ okMsg() }}</div>
-                <div class="msg bad" *ngIf="errMsg()">{{ errMsg() }}</div>
-            </form>
-        </section>
+      <div class="grid-3">
+        <article class="card">
+          <div class="step-number">1</div>
+          <h4>Escríbenos por WhatsApp</h4>
+          <p>Cuéntanos qué necesitas, dónde te encuentras y cuándo te gustaría recibir atención.</p>
+        </article>
+
+        <article class="card">
+          <div class="step-number">2</div>
+          <h4>Coordinamos tu servicio</h4>
+          <p>Te ayudamos a conectar con un especialista según el tipo de trabajo y tu zona.</p>
+        </article>
+
+        <article class="card">
+          <div class="step-number">3</div>
+          <h4>Recibe ayuda rápida</h4>
+          <p>Buscamos que el proceso se sienta cercano, claro y práctico desde el primer contacto.</p>
+        </article>
+      </div>
     </div>
-</section>
+  </section>
+
+  <section class="section" id="servicios">
+    <div class="container">
+      <div class="section-title">
+        <h3>Especialidades destacadas</h3>
+        <p>Empezamos con los oficios más solicitados para el hogar y pequeños negocios.</p>
+      </div>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="service-icon icon-plumb">🚰</div>
+          <h4>Gasfitería</h4>
+          <p>Reparaciones, instalaciones, fugas, cambios de grifería y soporte para necesidades comunes del hogar.</p>
+        </article>
+
+        <article class="card">
+          <div class="service-icon icon-power">⚡</div>
+          <h4>Electricidad</h4>
+          <p>Tomacorrientes, luminarias, revisiones básicas, cableado y trabajos eléctricos de uso residencial.</p>
+        </article>
+
+        <article class="card">
+          <div class="service-icon icon-wood">❄️</div>
+          <h4>Línea Blanca</h4>
+          <p>Reparación y mantenimiento de refrigeradoras, lavadoras, cocinas, hornos y otros equipos de línea blanca.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="service-icon icon-wood">🎨</div>
+          <h4>Pintura</h4>
+          <p>Servicio de pintura para interiores y exteriores, incluyendo paredes, techos y otros ambientes, con
+            distintos acabados.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div class="mobile-sticky-cta" aria-label="Acciones rápidas móviles">
+    <a class="btn btn-whatsapp" [href]="buildWhatsAppUrl('Hola, necesito un especialista de Mil Oficios')"
+      target="_blank" rel="noopener noreferrer">
+      WhatsApp
+    </a>
+    <a class="btn btn-primary" href="#registro">Registro</a>
+  </div>
+</main>
