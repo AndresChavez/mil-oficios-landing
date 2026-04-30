@@ -20,7 +20,19 @@
 
           <div class="hero-actions hero-actions-compact">
             <button class="btn btn-whatsapp btn-whatsapp-large" type="button" (click)="goToWhatsApp()">
-              💬 Buscar Especialista
+              <span class="btn-icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" class="whatsapp-icon" aria-hidden="true" fill="none">
+                  <path
+                    d="M16 4.75c-6.08 0-11 4.78-11 10.68 0 2.01.58 3.97 1.67 5.67L5.4 26.5l5.58-1.46a11.2 11.2 0 0 0 5.02 1.18c6.08 0 11-4.78 11-10.68S22.08 4.75 16 4.75Z"
+                    stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                  <g transform="translate(16 16) scale(1.22) translate(-16 -16)">
+                    <path
+                      d="M20.08 18.18c-.23-.12-1.36-.67-1.57-.75-.21-.08-.36-.12-.51.12-.15.23-.59.75-.72.9-.13.15-.26.17-.49.06-.23-.12-.95-.35-1.81-1.11-.67-.6-1.12-1.32-1.25-1.55-.13-.22-.01-.35.1-.46.1-.1.22-.25.33-.37.12-.13.15-.22.23-.37.08-.14.04-.27-.02-.39-.06-.12-.52-1.24-.71-1.7-.18-.44-.37-.39-.5-.39h-.44c-.15 0-.39.05-.59.29-.2.23-.76.79-.76 1.93s.82 2.2.93 2.36c.12.16 1.6 2.43 3.88 3.41.54.23.96.37 1.3.46.54.17 1.03.15 1.41.09.43-.06 1.34-.54 1.53-1.05.19-.51.19-.93.13-1.03-.06-.09-.2-.15-.43-.26Z"
+                      fill="currentColor" />
+                  </g>
+                </svg>
+              </span>
+              <span>Quiero un especialista</span>
             </button>
           </div>
         </div>
@@ -101,7 +113,7 @@
             <div class="msg bad" *ngIf="errMsg()">{{ errMsg() }}</div>
 
             <button class="btn btn-primary form-submit" type="submit">
-              REGISTRARME
+              Regístrate como especialista
             </button>
           </form>
         </div>
@@ -177,12 +189,4 @@
       </div>
     </div>
   </section>
-
-  <div class="mobile-sticky-cta" aria-label="Acciones rápidas móviles">
-    <a class="btn btn-whatsapp" [href]="buildWhatsAppUrl('Hola, necesito un especialista de Mil Oficios')"
-      target="_blank" rel="noopener noreferrer">
-      Buscar especialista
-    </a>
-    <a class="btn btn-primary" href="#registro">Registrarme como especialista</a>
-  </div>
 </main>

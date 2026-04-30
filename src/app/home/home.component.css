@@ -60,7 +60,7 @@
   padding: 46px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   position: relative;
   isolation: isolate;
 }
@@ -140,22 +140,33 @@
 
 .hero-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  width: 100%;
+  margin: 24px 0 20px;
 }
 
 .hero-actions-compact {
-  margin-top: 32px;
-  margin-bottom: 24px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .btn-whatsapp-large {
-  min-width: 300px;
+  width: 100%;
+  min-width: 0;
+  padding: 16px 24px;
+  font-size: 1rem;
+  font-weight: 700;
 }
 
-.hero-visual,
+.hero-visual {
+  margin-top: 0;
+  padding: 18px;
+  border-radius: 24px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.16);
+}
+
 .hero-visual-clean {
-  margin-top: 26px;
+  margin-top: 10px;
   padding: 18px;
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.12);
@@ -371,26 +382,6 @@
   margin: 0;
 }
 
-.mobile-sticky-cta {
-  position: fixed;
-  left: 12px;
-  right: 12px;
-  bottom: 12px;
-  z-index: 60;
-  display: none;
-  gap: 10px;
-  padding: 10px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(216, 227, 238, 0.95);
-  box-shadow: 0 14px 30px rgba(17, 43, 76, 0.16);
-}
-
-.mobile-sticky-cta .btn {
-  flex: 1;
-  padding: 14px 16px;
-  font-size: 0.95rem;
-}
 
 @media (max-width: 1200px) {
   .grid-3 {
@@ -415,41 +406,56 @@
 }
 
 @media (max-width: 720px) {
-  .hero {
-    padding-top: 16px;
-  }
+    .desktop-nav {
+        display: none;
+    }
 
-  .hero-left {
-    padding: 22px;
-  }
+    .hero {
+        padding-top: 16px;
+    }
 
-  .hero-right {
-    padding: 0;
-  }
+    .hero-left,
+    .hero-right {
+        padding: 22px;
+    }
 
-  .form-card {
-    padding: 22px;
-  }
+    .form-card {
+        padding: 22px;
+    }
 
-  .hero-actions-compact {
-    display: none;
-  }
+    .hero-actions {
+        display: flex;
+        width: 100%;
+    }
 
-  .btn-whatsapp-large {
-    min-width: 100%;
-    width: 100%;
-  }
+    .hero-actions .btn {
+        width: 100%;
+        max-width: 100%;
+    }
 
-  .mobile-sticky-cta {
-    display: flex;
-  }
+    .mobile-sticky-cta {
+        display: none;
+    }
 
-  .hero-title {
-    font-size: 2.35rem;
-  }
+    h1 {
+        font-size: 2.35rem;
+    }
 
-  .hero-visual img,
-  .hero-visual-clean img {
-    min-height: 220px;
-  }
+    .site-footer {
+        padding-bottom: 24px;
+    }
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  flex: 0 0 auto;
+}
+
+.whatsapp-icon {
+  width: 34px;
+  height: 34px;
+  display: block;
 }

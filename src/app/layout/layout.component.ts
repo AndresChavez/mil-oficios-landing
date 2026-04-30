@@ -8,4 +8,10 @@ import { RouterLink, RouterOutlet } from '@angular/router';
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css'
 })
-export class LayoutComponent {}
+export class LayoutComponent {
+  private readonly whatsappNumber = '51980941418';
+
+  buildWhatsAppUrl(message: string): string {
+    return `https://wa.me/${this.whatsappNumber}?text=${encodeURIComponent(message)}`;
+  }
+}
