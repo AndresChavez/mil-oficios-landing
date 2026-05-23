@@ -7,3 +7,28 @@
 .layout-main {
   min-height: calc(100vh - 170px);
 }
+
+.site-header {
+  height: 76px;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.brand-logo {
+  height: 56px;
+  width: auto;
+  display: block;
+}
