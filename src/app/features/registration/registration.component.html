@@ -1,0 +1,118 @@
+<section class="registration-section">
+  <div class="page-container">
+    <a class="back-link" routerLink="/especialistas"><app-icon name="arrow-left" [size]="18" /> Volver a especialistas</a>
+    <div class="registration-layout">
+      <aside class="registration-aside hidden relative overflow-hidden rounded-3xl p-9 self-start min-h-[490px] text-white lg:block">
+        <span class="eyebrow">CRECE CON TU OFICIO</span>
+        <h2 class="text-4xl leading-tight mt-6 mb-5 font-bold tracking-tight">Tu experiencia<br>tiene un lugar aquí.</h2>
+        <p class="text-sm leading-8 text-indigo-100">Cuéntanos qué sabes hacer y en qué distritos puedes atender. Queremos conocerte.</p>
+        <div class="flex gap-3.5 mt-10 text-indigo-100 text-xs leading-7"><app-icon name="shield" [size]="24" class="shrink-0 text-teal-200" /><p>Revisaremos tu información y nos pondremos en contacto contigo por WhatsApp.</p></div>
+        <div class="absolute -bottom-20 -right-10 w-56 h-40 bg-teal-300 -rotate-25 opacity-20" aria-hidden="true"></div>
+      </aside>
+
+      <div class="surface-card registration-card">
+        @if (submitted()) {
+          <div class="success-screen text-center py-6">
+            <span class="success-icon grid place-items-center w-20 h-20 rounded-full mx-auto mb-6" aria-hidden="true"><app-icon name="check" [size]="34" /></span>
+            <span class="eyebrow">SOLICITUD ENVIADA</span>
+            <h1 id="registration-success" tabindex="-1" class="text-3xl font-bold leading-tight tracking-tight text-brand-navy my-4">¡Recibimos tu solicitud!</h1>
+            <p class="text-sm text-slate-600 leading-8">Gracias por querer formar parte de Mil Oficios.</p>
+            <div class="flex items-center gap-3.5 text-left p-5 mt-6 mb-4 rounded-xl bg-teal-50 text-teal-900 text-sm leading-7"><app-icon name="whatsapp" [size]="25" class="shrink-0" /><p>Revisaremos tus datos y te contactaremos por WhatsApp para continuar con el proceso.</p></div>
+            <p class="text-xs text-slate-600 leading-7 mb-7">Enviar tu solicitud no implica aceptación en la red ni verificación completada.</p>
+            <a routerLink="/" class="button button-specialist w-full">Volver al inicio <app-icon name="arrow-right" [size]="18" /></a>
+          </div>
+        } @else {
+          <nav aria-label="Progreso del registro" class="step-progress">
+            <ol>
+              <li [class.active]="step() === 1" [class.complete]="step() === 2" [attr.aria-current]="step() === 1 ? 'step' : null"><span class="step-number">@if (step() === 2) {<app-icon name="check" [size]="16" />} @else {1}</span><span>Tus datos</span></li>
+              <li class="step-line" aria-hidden="true"></li>
+              <li [class.active]="step() === 2" [attr.aria-current]="step() === 2 ? 'step' : null"><span class="step-number">2</span><span>Zona y verificación</span></li>
+            </ol>
+          </nav>
+
+          <div class="form-heading">
+            <p class="text-[.68rem] font-bold tracking-widest text-brand-primary">PASO {{ step() }} DE 2</p>
+            <h1 id="registration-title" tabindex="-1" class="text-[1.65rem] font-bold tracking-tight leading-tight text-brand-navy mt-2 mb-2.5">{{ step() === 1 ? 'Tus datos' : 'Zona y verificación' }}</h1>
+            <p class="text-sm text-slate-600 leading-7">{{ step() === 1 ? 'Empecemos por conocerte un poco mejor.' : 'Cuéntanos dónde trabajas y completa tu información.' }}</p>
+          </div>
+
+          <form [formGroup]="form" (ngSubmit)="submit()" [attr.aria-busy]="loading()" novalidate>
+            @if (step() === 1) {
+              <div class="form-field">
+                <label for="full-name">Nombre completo <span aria-hidden="true">*</span></label>
+                <input class="form-input" id="full-name" formControlName="fullName" autocomplete="name" maxlength="120" placeholder="Escribe tu nombre completo" required [attr.aria-invalid]="invalid('fullName')" [attr.aria-describedby]="invalid('fullName') ? 'full-name-error' : null">
+                @if (invalid('fullName')) {<p id="full-name-error" class="form-error">Ingresa tu nombre completo (entre 3 y 120 caracteres).</p>}
+              </div>
+              <div class="form-field">
+                <label for="phone">Celular / WhatsApp <span aria-hidden="true">*</span></label>
+                <div class="phone-input"><span aria-hidden="true">+51</span><input class="form-input" id="phone" type="tel" inputmode="numeric" formControlName="phone" autocomplete="tel-national" maxlength="9" placeholder="987654321" required [attr.aria-invalid]="invalid('phone')" [attr.aria-describedby]="invalid('phone') ? 'phone-hint phone-error' : 'phone-hint'"></div>
+                <p id="phone-hint" class="field-hint">Un celular peruano de 9 dígitos, sin espacios.</p>
+                @if (invalid('phone')) {<p id="phone-error" class="form-error">Ingresa 9 dígitos, empezando por 9.</p>}
+              </div>
+              <fieldset class="form-field" [attr.aria-invalid]="invalid('specialities')" [attr.aria-describedby]="invalid('specialities') ? 'specialities-error' : 'specialities-hint'" tabindex="-1">
+                <legend>¿Cuáles son tus especialidades? <span aria-hidden="true">*</span></legend>
+                <p class="field-hint" id="specialities-hint">Puedes elegir más de una.</p>
+                <div class="speciality-options">
+                  @for (speciality of specialities; track speciality) {
+                    <label class="selection-option" [class.selected]="form.controls.specialities.value.includes(speciality)"><input type="checkbox" [checked]="form.controls.specialities.value.includes(speciality)" (change)="toggleSelection('specialities', speciality, $event)" [disabled]="loading() || submissionBlocked()" [attr.aria-controls]="speciality === 'Otro' && hasOtherSpeciality ? 'other-speciality-field' : null"><span>{{ speciality }}</span></label>
+                  }
+                </div>
+                @if (invalid('specialities')) {<p id="specialities-error" class="form-error">Selecciona al menos una especialidad.</p>}
+              </fieldset>
+              @if (hasOtherSpeciality) {
+                <div id="other-speciality-field" class="form-field">
+                  <label for="other-speciality">¿Qué otro oficio realizas? <span aria-hidden="true">*</span></label>
+                  <input class="form-input" id="other-speciality" type="text" formControlName="otherSpeciality" minlength="3" maxlength="80" placeholder="Ej.: Carpintería" autocomplete="off" required [attr.aria-invalid]="invalid('otherSpeciality')" [attr.aria-describedby]="invalid('otherSpeciality') ? 'other-speciality-hint other-speciality-error' : 'other-speciality-hint'">
+                  <p id="other-speciality-hint" class="field-hint">Escribe el oficio que no aparece en la lista.</p>
+                  @if (invalid('otherSpeciality')) {<p id="other-speciality-error" class="form-error" role="alert">Escribe tu oficio para continuar (entre 3 y 80 caracteres).</p>}
+                </div>
+              }
+            } @else {
+              <fieldset class="form-field" [attr.aria-invalid]="invalid('districts')" [attr.aria-describedby]="invalid('districts') ? 'districts-error' : 'districts-hint'" tabindex="-1">
+                <legend>Distritos donde puedes atender <span aria-hidden="true">*</span></legend>
+                <p class="field-hint" id="districts-hint">Selecciona uno o más distritos de Lima Metropolitana.</p>
+                <label for="district-search" class="sr-only">Buscar distrito</label>
+                <div class="district-search"><app-icon name="search" [size]="18" /><input class="form-input" id="district-search" type="search" placeholder="Escribe un distrito, ej.: Surco" [value]="districtSearch()" (input)="searchDistricts($event)" [disabled]="loading() || submissionBlocked()" autocomplete="off" aria-describedby="districts-hint district-search-status"></div>
+                <p id="district-search-status" class="field-hint" role="status" aria-atomic="true">
+                  @if (districtSearch().trim()) {
+                    {{ filteredDistricts.length }} {{ filteredDistricts.length === 1 ? 'coincidencia' : 'coincidencias' }}
+                  } @else {Escribe para ver los distritos que coinciden.}
+                </p>
+                <div class="district-options" role="group" aria-label="Distritos disponibles">
+                  @for (district of filteredDistricts; track district) {
+                    <label class="district-option inline-flex min-h-11 max-w-full cursor-pointer items-center gap-2 rounded-full border border-[#dfe2ed] bg-white px-3 py-2 text-xs leading-6 has-checked:border-brand-primary has-checked:bg-indigo-50 has-checked:text-brand-primary has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand-primary"><input type="checkbox" [checked]="form.controls.districts.value.includes(district)" (change)="toggleSelection('districts', district, $event)" [disabled]="loading() || submissionBlocked()"><span>{{ district }}</span></label>
+                  } @empty {@if (districtSearch().trim()) {<p class="field-hint">No encontramos ese distrito. Prueba con otro nombre.</p>}}
+                </div>
+                <p class="field-hint mt-2" role="status" aria-atomic="true">{{ form.controls.districts.value.length }} {{ form.controls.districts.value.length === 1 ? 'distrito seleccionado' : 'distritos seleccionados' }}</p>
+                @if (form.controls.districts.value.length) {
+                  <div class="flex flex-wrap gap-2" role="group" aria-label="Distritos seleccionados">
+                    @for (district of form.controls.districts.value; track district) {
+                      <button type="button" class="inline-flex min-h-11 max-w-full items-center gap-2 rounded-full border border-brand-primary/25 bg-brand-pale px-3 py-2 text-left text-xs leading-6 text-brand-navy hover:bg-brand-soft-accent disabled:opacity-60" [attr.aria-label]="'Quitar ' + district" (click)="removeDistrict(district)" [disabled]="loading() || submissionBlocked()"><span>{{ district }}</span><app-icon name="x" [size]="16" /></button>
+                    }
+                  </div>
+                }
+                @if (invalid('districts')) {<p id="districts-error" class="form-error">Selecciona al menos un distrito de atención.</p>}
+              </fieldset>
+              <div class="document-grid grid gap-4 sm:grid-cols-2">
+                <div class="form-field"><label for="document-type">Tipo de documento <span aria-hidden="true">*</span></label><select class="form-input" id="document-type" formControlName="documentType"><option value="DNI">DNI</option><option value="CE">Carné de extranjería</option></select></div>
+                <div class="form-field"><label for="document-number">Número de documento <span aria-hidden="true">*</span></label><input class="form-input" id="document-number" formControlName="numberDocument" [attr.inputmode]="form.controls.documentType.value === 'DNI' ? 'numeric' : 'text'" [attr.maxlength]="form.controls.documentType.value === 'DNI' ? 8 : 12" autocomplete="off" required [attr.aria-invalid]="invalid('numberDocument')" [attr.aria-describedby]="invalid('numberDocument') ? 'document-error' : null">@if (invalid('numberDocument')) {<p id="document-error" class="form-error">{{ form.controls.documentType.value === 'DNI' ? 'Ingresa los 8 dígitos de tu DNI.' : 'Ingresa entre 9 y 12 letras o números de tu carné.' }}</p>}</div>
+              </div>
+              <div class="form-field"><label for="description">Cuéntanos más de ti <span class="optional">(opcional)</span></label><textarea class="form-input" id="description" formControlName="description" rows="3" maxlength="1000" placeholder="Tu experiencia, otros trabajos que realizas..." [attr.aria-invalid]="invalid('description')" [attr.aria-describedby]="invalid('description') ? 'description-error' : null"></textarea>@if (invalid('description')) {<p id="description-error" class="form-error">Escribe hasta 1000 caracteres.</p>}</div>
+              <div class="consent-field"><label class="flex items-start gap-2.5 text-xs leading-7 text-slate-600"><input type="checkbox" formControlName="consent" required [attr.aria-invalid]="invalid('consent')" [attr.aria-describedby]="invalid('consent') ? 'consent-error' : null"><span>Acepto el tratamiento de mis datos personales conforme a la <a routerLink="/politicas-privacidad" target="_blank" rel="noopener noreferrer">Política de Privacidad<span class="sr-only"> (se abre en una pestaña nueva)</span></a>.</span></label>@if (invalid('consent')) {<p id="consent-error" class="form-error">Necesitamos tu consentimiento para recibir la solicitud.</p>}</div>
+            }
+
+            @if (errorMessage()) {<div id="registration-error" class="api-error p-4 bg-orange-50 border border-orange-200 rounded-xl text-sm leading-7" role="alert" tabindex="-1"><p>{{ errorMessage() }}</p><a [href]="helpUrl" target="_blank" rel="noopener noreferrer">Consultar por WhatsApp <span class="sr-only">(se abre en una pestaña nueva)</span><app-icon name="arrow-right" [size]="16" /></a></div>}
+            @if (step() === 2) {
+              <p id="registration-evaluation-note" class="mt-6 text-xs leading-6 text-brand-muted">Tu solicitud estará sujeta a evaluación. Enviarla no implica aceptación en la red ni verificación completada.</p>
+            }
+            <div class="form-actions" [class.two-actions]="step() === 2">
+              @if (step() === 2) {<button class="button button-outline" type="button" (click)="previousStep()" [disabled]="loading() || submissionBlocked()"><app-icon name="arrow-left" [size]="18" /> Atrás</button>}
+              <button class="button button-specialist" type="submit" [attr.aria-describedby]="step() === 2 ? 'registration-evaluation-note' : null" [disabled]="loading() || submissionBlocked() || (step() === 1 ? !firstStepValid : form.invalid)">{{ loading() ? 'Enviando solicitud...' : step() === 1 ? 'Continuar' : 'Enviar solicitud' }}@if (!loading()) {<app-icon name="arrow-right" [size]="18" />}</button>
+            </div>
+            <p class="flex justify-center items-center gap-1.5 text-[.65rem] text-slate-600 mt-4 leading-7"><app-icon name="shield" [size]="15" /> Tus datos se usarán para evaluar tu solicitud.</p>
+          </form>
+        }
+      </div>
+    </div>
+  </div>
+</section>

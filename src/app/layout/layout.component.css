@@ -1,34 +1,16 @@
-:host {
-  display: block;
-  min-height: 100vh;
-  background: var(--bg);
-}
-
-.layout-main {
-  min-height: calc(100vh - 170px);
-}
-
-.site-header {
-  height: 76px;
-  display: flex;
-  align-items: center;
-  background: #ffffff;
-}
-
-.header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-}
-
-.brand-logo {
-  height: 56px;
-  width: auto;
-  display: block;
-}
+:host{display:block}
+.site-header{background:white}
+.nav-link{padding:12px 0}
+.nav-link:hover{color:var(--color-brand-primary)}
+.header-quote{min-height:43px;font-size:12px;padding:10px 16px}
+.footer-link{display:flex;align-items:center;gap:10px;min-height:44px;font-size:13px;color:#e4e7fb}
+a.footer-link:hover{color:white;text-decoration:underline;text-underline-offset:4px}
+.footer-claims{display:inline-flex;align-items:center;gap:10px;min-height:44px;margin-top:8px;padding:8px 12px;border:1px solid #ffffff55;border-radius:10px;font-family:var(--font-heading);font-size:12px;line-height:1.6;color:white}
+a.footer-claims:hover{background:#ffffff10}
+@media(min-width:768px) and (pointer:fine){.footer-link{min-height:34px}}
+@media(max-width:767px){.brand-logo{width:112px;height:auto}
+.header-quote{padding:10px 13px;font-size:11px}
+.site-header .page-container{min-height:76px}}
+@media(max-width:359px){.site-header .page-container{width:calc(100% - 24px);gap:7px}
+.brand-logo{width:104px}
+.header-quote{gap:5px;padding:9px 10px}}

@@ -1,154 +1,90 @@
 import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { finalize } from 'rxjs/operators';
+import { IconComponent } from '../shared/icon.component';
+import { SERVICES, TESTIMONIALS } from '../core/content';
+import { SPECIALIST_REQUEST_URL } from '../core/contact';
+import { TrackWhatsAppDirective } from '../shared/track-whatsapp.directive';
 import { environment } from '../../environments/environment';
-import { form } from '@angular/forms/signals';
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  selector: 'app-home', standalone: true,
+  imports: [RouterLink, IconComponent, TrackWhatsAppDirective],
+  templateUrl: './home.component.html', styleUrl: './home.component.css',
 })
 export class HomeComponent {
-  private readonly whatsappNumber = '51980941418';
+  readonly services = SERVICES;
+  readonly testimonials = environment.production
+    ? TESTIMONIALS.filter(testimonial => !testimonial.sample)
+    : TESTIMONIALS;
+  readonly currentTestimonial = signal(0);
+  readonly specialistRequestUrl = SPECIALIST_REQUEST_URL;
+  readonly benefits = [
+    { icon: 'shield-check', title: 'Técnicos verificados', description: 'Identidad, referencias y experiencia.' },
+    { icon: 'whatsapp-monochrome', title: 'Coordina por WhatsApp', description: 'Cuéntanos qué necesitas desde el chat.' },
+    { icon: 'handshake', title: 'Atención con confianza', description: 'Resuelve tus dudas antes de coordinar el servicio.' },
+    { icon: 'map-pin', title: 'Cerca de ti', description: 'Técnicos de tu distrito para atención rápida.' },
+  ];
+  readonly faqs = [
+    {
+      id: 'faq-01',
+      question: '¿Cuánto cuesta solicitar una cotización?',
+      answer: 'Puedes enviarnos tu solicitud sin compromiso. Si el especialista necesita realizar una visita técnica para evaluar el trabajo, te informaremos previamente si tiene algún costo y cuáles son sus condiciones.',
+    },
+    {
+      id: 'faq-02',
+      question: '¿Cómo funciona Mil Oficios?',
+      answer: 'Cuéntanos qué trabajo necesitas, en qué distrito y cuándo te gustaría realizarlo. Te ayudaremos a encontrar especialistas que puedan atender tu solicitud para que elijas la opción que mejor se adapte a tus necesidades.',
+    },
+    {
+      id: 'faq-03',
+      question: '¿Cómo sé que el especialista es confiable?',
+      answer: 'En Mil Oficios buscamos trabajar con especialistas que pasan por un proceso de revisión de información y experiencia. Te compartiremos los datos disponibles del especialista para ayudarte a tomar una decisión informada.',
+    },
+    {
+      id: 'faq-04',
+      question: '¿Qué tan rápido responden?',
+      answer: 'Revisamos tu solicitud para ayudarte a encontrar un especialista disponible. El tiempo de respuesta puede variar según el tipo de trabajo, la ubicación y la disponibilidad de nuestros especialistas.',
+    },
+    {
+      id: 'faq-05',
+      question: '¿Puedo elegir al especialista que realizará el trabajo?',
+      answer: 'Sí. Cuando encontremos especialistas disponibles, te presentaremos las alternativas para que puedas elegir con quién deseas coordinar el servicio.',
+    },
+    {
+      id: 'faq-06',
+      question: '¿Qué sucede si tengo un problema después del servicio?',
+      answer: 'Puedes comunicarte con Mil Oficios para reportar lo ocurrido. Revisaremos tu caso y te orientaremos sobre las condiciones de garantía o solución que correspondan al trabajo realizado.',
+    },
+    {
+      id: 'faq-07',
+      question: '¿Qué tipos de servicios puedo solicitar?',
+      answer: 'Puedes solicitar servicios de gasfitería, electricidad, carpintería, pintura, melamina, drywall, reparación de electrodomésticos y otros trabajos de mantenimiento o mejora del hogar.',
+    },
+    {
+      id: 'faq-08',
+      question: '¿En qué distritos atienden?',
+      answer: 'Recibimos solicitudes en Lima Metropolitana y Callao. La atención dependerá de la disponibilidad de especialistas que cubran tu distrito.',
+    },
+  ] as const;
+  readonly expandedFaqIds = signal<ReadonlySet<string>>(new Set());
 
-  specialistForm: FormGroup;
+  isFaqOpen(id: string): boolean {
+    return this.expandedFaqIds().has(id);
+  }
 
-  loading = signal(false);
-  private readonly okMessage = signal('');
-  private readonly errMessage = signal('');
-
-  constructor(
-    private fb: FormBuilder,
-    private http: HttpClient
-  ) {
-    this.specialistForm = this.fb.group({
-      nombre: ['', [Validators.required, Validators.minLength(3)]],
-      celular: ['', [Validators.required, Validators.minLength(9)]],
-      docIdentidad: ['', [Validators.required, Validators.minLength(8)]],
-      especialidad: ['', [Validators.required, Validators.minLength(3)]],
-      zona: ['', [Validators.required, Validators.minLength(2)]],
-      experiencia: [''],
-      consent: [false, [Validators.requiredTrue]]
+  toggleFaq(id: string): void {
+    this.expandedFaqIds.update(expanded => {
+      const next = new Set(expanded);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
     });
   }
 
-  buildWhatsAppUrl(message: string): string {
-    return `https://wa.me/${this.whatsappNumber}?text=${encodeURIComponent(message)}`;
-  }
-
-  goToWhatsApp(): void {
-    const url = this.buildWhatsAppUrl(
-      'Hola, necesito un especialista de Mil Oficios'
-    );
-    window.open(url, '_blank', 'noopener,noreferrer');
-  }
-
-  okMsg(): string {
-    return this.okMessage();
-  }
-
-  errMsg(): string {
-    return this.errMessage();
-  }
-
-  fieldInvalid(fieldName: string): boolean {
-    const field = this.specialistForm.get(fieldName);
-    return !!field && field.invalid && (field.touched || field.dirty);
-  }
-
-  private clearMessageAfterDelay(): void {
-    setTimeout(() => {
-      this.okMessage.set('');
-      this.errMessage.set('');
-    }, 5000);
-  }
-
-  private setSuccess(message: string): void {
-    this.errMessage.set('');
-    this.okMessage.set(message);
-    this.clearMessageAfterDelay();
-  }
-
-  private setError(message: string): void {
-    this.okMessage.set('');
-    this.errMessage.set(message);
-    this.clearMessageAfterDelay();
-  }
-
-  private validatePhone(value: string): boolean {
-    const cleaned = value.replace(/\D/g, '');
-    return cleaned.length >= 9;
-  }
-
-  submitForm(): void {
-    this.clearMessageAfterDelay();
-
-    if (this.specialistForm.invalid) {
-      this.specialistForm.markAllAsTouched();
-      this.setError('Completa correctamente los campos obligatorios.');
-      return;
-    }
-
-    const formValue = this.specialistForm.getRawValue();
-
-    if (!this.validatePhone(formValue.celular)) {
-      this.setError('Ingresa un número de celular válido.');
-      return;
-    }
-
-    const payload = {
-      fullName: formValue.nombre,
-      phone: formValue.celular,
-      numberDocument: formValue.docIdentidad,
-      speciality: formValue.especialidad,
-      district: formValue.zona,
-      //experiencia: formValue.experiencia,
-      consent: formValue.consent,
-      //source: 'miloficios-landing',
-      //createdAt: new Date().toISOString()
-    };
-
-    this.loading.set(true);
-    this.specialistForm.disable();
-
-    this.http
-      .post<{ message: string }>(environment.preRegisterEndpoint, payload)
-      .pipe(
-        finalize(() => {
-          this.loading.set(false);
-          this.specialistForm.enable();
-        })
-      )
-      .subscribe({
-        next: (res) => {
-          this.setSuccess('Gracias, recibimos tu registro y te contactaremos pronto.');
-
-          this.specialistForm.reset({
-            nombre: '',
-            celular: '',
-            docIdentidad: '',
-            especialidad: '',
-            zona: '',
-            experiencia: '',
-            consent: false
-          });
-        },
-        error: (err) => {
-          this.setError(
-            err?.error?.message ?? 'No se pudo enviar. Intenta nuevamente.'
-          );
-        }
-      });
+  selectTestimonial(index: number): void {
+    this.currentTestimonial.set((index + this.testimonials.length) % this.testimonials.length);
   }
 }

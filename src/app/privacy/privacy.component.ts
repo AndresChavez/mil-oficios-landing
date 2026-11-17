@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { BUSINESS_IDENTITY } from '../core/business-identity';
 
 @Component({
   selector: 'app-privacy',
@@ -6,4 +7,6 @@ import { Component } from '@angular/core';
   templateUrl: './privacy.component.html',
   styleUrl: './privacy.component.css'
 })
-export class PrivacyComponent {}
+export class PrivacyComponent {
+  readonly businessIdentity = BUSINESS_IDENTITY;
+}
